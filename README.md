@@ -16,17 +16,27 @@ I have supplied a sample that shows how it works. But what it basically does is:
 Usage checklist
 ---------------
 Pass the strings:
+
 + **monodroid.watoolkit.library.login.realm** with the realm you are trying to reach (usually in the format uri://blablabla.com
 + **monodroid.watoolkit.library.login.acsNamespace** with your desired namespace
 to the AccessControlLoginActivity.
 
 Like so:
+
 	Intent intent = new Intent(this, typeof(AccessControlLoginActivity));
     intent.PutExtra("monodroid.watoolkit.library.login.realm", "uri://myAwesomeRealm.com");
     intent.PutExtra("monodroid.watoolkit.library.login.acsNamespace", "MyAwesomeNamespace");
 
-Your token will be stored in RequestSecurityTokenResponseStore which stores it on the phone in an XML file.
+Your token will be stored in `RequestSecurityTokenResponseStore` which stores it on the phone in an XML file.
+
+**NOTICE**
+
+>You have to either link or copy the file `AccessControlJavascriptNotify.java` into you main project and mark it **AndroidJavaSource**,
+otherwise you *will* encounter problems. This is due to WebView's Javascript Interface only take Java Objects and require methods being registered
+in the Android Wrappers. Usually only overridden native methods get registered, so we have to do it this way for now. Look at `ManagedAccessControlJavascriptNotify.cs`
+for how it is implemented.
+
 
 License
 -------
-[Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+This project is licensed under [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0).
