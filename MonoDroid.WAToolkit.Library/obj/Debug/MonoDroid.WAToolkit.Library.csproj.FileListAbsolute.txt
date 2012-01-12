@@ -1,0 +1,11 @@
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\bin\Debug\MonoDroid.WAToolkit.Library.dll
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\bin\Debug\MonoDroid.WAToolkit.Library.pdb
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\bin\Debug\MonoDroid.WAToolkit.Library.dll.mdb
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\bin\Debug\monodroid.watoolkit.library.apk
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\bin\Debug\monodroid.watoolkit.library-Signed.apk
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\obj\Debug\MonoDroid.WAToolkit.Library.dll
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\obj\Debug\MonoDroid.WAToolkit.Library.pdb
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\obj\Debug\android\bin\monodroid.watoolkit.library.apk
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\obj\Debug\R.cs.flag
+C:\Users\tcielecki\Desktop\MonoDroid.WAToolkit\MonoDroid.WAToolkit.Library\obj\Debug\uploadflags.txt
