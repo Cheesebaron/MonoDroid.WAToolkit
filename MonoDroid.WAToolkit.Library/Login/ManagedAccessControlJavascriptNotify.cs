@@ -72,7 +72,7 @@ namespace MonoDroid.WAToolkit.Library.Login
             Java.Lang.String securityTokenResponse = Java.Lang.Object.GetObject<Java.Lang.String>(native_securityTokenResponse, JniHandleOwnership.DoNotTransfer);
             __this.Notify(securityTokenResponse);
         }
-        #endregion
 #pragma warning restore 0169
+        #endregion
     }
 }

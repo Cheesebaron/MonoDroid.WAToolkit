@@ -92,10 +92,7 @@ namespace MonoDroid.WAToolkit
         {
             if (Result.Ok == resultCode && 0 == requestCode)
             {
-                if (data.GetStringExtra("monodroid.watoolkit.library.login.RequestSecurityTokenResponse").Length > 0)
-                {
-                    UpdateTokenText();
-                }
+                UpdateTokenText();
             }
         }
     }
