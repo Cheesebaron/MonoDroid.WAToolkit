@@ -23,8 +23,6 @@ using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Android.Graphics;
-
 using MonoDroid.WAToolkit.Library.Utilities;
 using MonoDroid.WAToolkit.Library.EventArguments;
 
@@ -32,42 +30,42 @@ namespace MonoDroid.WAToolkit.Library.Login
 {
     public class AccessControlIdentityProviderListView : LinearLayout
     {
-        private Uri _identityProviderDiscoveryService = null;
-        private string _realm = null;
-        private string _serviceNamespace = null;
+        private Uri _identityProviderDiscoveryService;
+        private string _realm;
+        private string _serviceNamespace;
 
-        private ListView IdentityProviderList;
+        private ListView _identityProviderList;
         private IdentityProviderAdapter _identityProviderAdapter;
 
         #region AlertDialog
-        private AlertDialog alertDialog;
+        private AlertDialog _alertDialog;
         private void ShowAlertDialog(string title, string message)
         {
-            if (alertDialog != null && alertDialog.IsShowing) return;
-            alertDialog = new AlertDialog.Builder(Context).Create();
-            alertDialog.SetTitle(title);
-            alertDialog.SetMessage(message);
-            alertDialog.SetButton("OK", (alertsender, args) => { });
-            alertDialog.Show();
+            if (_alertDialog != null && _alertDialog.IsShowing) return;
+            _alertDialog = new AlertDialog.Builder(Context).Create();
+            _alertDialog.SetTitle(title);
+            _alertDialog.SetMessage(message);
+            _alertDialog.SetButton("OK", (alertsender, args) => { });
+            _alertDialog.Show();
         }
         #endregion
 
         #region ProgressDialog
-        private ProgressDialog progressDialog;
+        private ProgressDialog _progressDialog;
         public void ShowProgressDialog(string title, string message)
         {
-            if (!progressDialog.IsShowing)
+            if (!_progressDialog.IsShowing)
             {
-                progressDialog.SetTitle(title);
-                progressDialog.SetMessage(message);
-                progressDialog.Show();
+                _progressDialog.SetTitle(title);
+                _progressDialog.SetMessage(message);
+                _progressDialog.Show();
             }
         }
 
         public void HideProgressDialog()
         {
-            if (progressDialog.IsShowing)
-                progressDialog.Dismiss();
+            if (_progressDialog.IsShowing)
+                _progressDialog.Dismiss();
         }
         #endregion
 
@@ -84,14 +82,8 @@ namespace MonoDroid.WAToolkit.Library.Login
 
         private void Initialize()
         {
-            progressDialog = new ProgressDialog(Context);
+            _progressDialog = new ProgressDialog(Context);
             ShowProgressDialog("Please wait...", "Loading Identity Providers...");
-        }
-
-        void IdentityProviderList_ItemClick(object sender, ItemEventArgs e)
-        {
-            if (null != NavigateToIdentityProvider)
-                NavigateToIdentityProvider(this, new IdentityProviderInformationEventArgs(_identityProviderAdapter.IdentityProviders.ElementAtOrDefault(e.Position)));
         }
 
         public string Realm
@@ -124,7 +116,7 @@ namespace MonoDroid.WAToolkit.Library.Login
         public void GetSecurityToken(Uri identityProviderDiscoveryService)
         {
             _identityProviderDiscoveryService = identityProviderDiscoveryService;
-            IdentityProviderList_Refresh(_identityProviderDiscoveryService);
+            IdentityProviderListRefresh(_identityProviderDiscoveryService);
         }
 
         public void GetSecurityToken()
@@ -139,7 +131,7 @@ namespace MonoDroid.WAToolkit.Library.Login
                 throw new InvalidOperationException("ServiceNamespace was not set");
             }
 
-            Uri identityProviderDiscovery = new Uri(
+            var identityProviderDiscovery = new Uri(
                 string.Format(
                     "https://{0}.accesscontrol.windows.net/v2/metadata/IdentityProviders.js?protocol=javascriptnotify&realm={1}&version=1.0",
                     _serviceNamespace,
@@ -150,33 +142,37 @@ namespace MonoDroid.WAToolkit.Library.Login
             GetSecurityToken(identityProviderDiscovery);
         }
 
-        private void IdentityProviderList_Refresh(Uri identityProviderDiscoveryService)
+        private void IdentityProviderListRefresh(Uri identityProviderDiscoveryService)
         {
             System.Diagnostics.Debug.WriteLine("Refreshing Identity Provider List");
-            JSONIdentityProviderDiscoveryClient jsonClient = new JSONIdentityProviderDiscoveryClient();
-            jsonClient.GetIdentityProviderListCompleted += new EventHandler<GetIdentityProviderListEventArgs>(IdentityProviderList_RefreshCompleted);
+            var jsonClient = new JSONIdentityProviderDiscoveryClient();
+            jsonClient.GetIdentityProviderListCompleted += IdentityProviderListRefreshCompleted;
             jsonClient.GetIdentityProviderListAsync(identityProviderDiscoveryService);
         }
 
-        private void IdentityProviderList_RefreshCompleted(object sender, GetIdentityProviderListEventArgs e)
+        private void IdentityProviderListRefreshCompleted(object sender, GetIdentityProviderListEventArgs e)
         {
-            Handler handler = new Android.OS.Handler(Context.MainLooper); //We need to update on UI thread.
+            var handler = new Handler(Context.MainLooper); //We need to update on UI thread.
             handler.Post(() =>
             {
                 if (null == e.Error)
                 {
-                    IdentityProviderList = new ListView(this.Context);
-                    IdentityProviderList.LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-                    IdentityProviderList.SetPadding(10, 0, 0, 0);
-                    IdentityProviderList.ItemClick += new EventHandler<ItemEventArgs>(IdentityProviderList_ItemClick);
-                    IdentityProviderList.Divider = null;
+                    _identityProviderList = new ListView(Context)
+                    {
+                        LayoutParameters =
+                            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent,
+                                                        ViewGroup.LayoutParams.FillParent)
+                    };
+                    _identityProviderList.SetPadding(10, 0, 0, 0);
+                    _identityProviderList.ItemClick += OnIdentityProviderListOnItemClick;
+                    _identityProviderList.Divider = null;
 
-                    AddView(IdentityProviderList);
+                    AddView(_identityProviderList);
 
                     if (_identityProviderAdapter == null)
-                        _identityProviderAdapter = new IdentityProviderAdapter(this.Context);
+                        _identityProviderAdapter = new IdentityProviderAdapter(Context);
                 
-                    IdentityProviderList.Adapter = _identityProviderAdapter;
+                    _identityProviderList.Adapter = _identityProviderAdapter;
                     _identityProviderAdapter.IdentityProviders = e.Result;
 
                     PostInvalidate();
@@ -190,14 +186,20 @@ namespace MonoDroid.WAToolkit.Library.Login
             });
         }
 
+        private void OnIdentityProviderListOnItemClick(object s, AdapterView.ItemClickEventArgs e)
+        {
+            if (null != NavigateToIdentityProvider)
+                NavigateToIdentityProvider(this, new IdentityProviderInformationEventArgs(_identityProviderAdapter.IdentityProviders.ElementAtOrDefault(e.Position)));
+        }
+
         protected override void Dispose(bool disposing)
         {
-            if (progressDialog != null)
-                progressDialog.Dispose();
-            if (alertDialog != null)
-                alertDialog.Dispose();
-            if (IdentityProviderList != null)
-                IdentityProviderList.Dispose();
+            if (_progressDialog != null)
+                _progressDialog.Dispose();
+            if (_alertDialog != null)
+                _alertDialog.Dispose();
+            if (_identityProviderList != null)
+                _identityProviderList.Dispose();
             if (_identityProviderAdapter != null)
                 _identityProviderAdapter.Dispose();
 

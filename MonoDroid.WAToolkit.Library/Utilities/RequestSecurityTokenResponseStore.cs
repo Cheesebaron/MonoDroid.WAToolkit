@@ -56,7 +56,7 @@ namespace MonoDroid.WAToolkit.Library.Utilities
         }
 
         /// <summary>
-        /// Gets or sets the security token from the configured RequestSecurityTokenResponse
+        /// Gets the security token from the configured RequestSecurityTokenResponse
         /// </summary>
         /// <remarks>Get returns null if no RequestSecurityTokenResponse has been configured. </remarks>
         public string SecurityToken
@@ -74,12 +74,14 @@ namespace MonoDroid.WAToolkit.Library.Utilities
         /// otherwise retruns false</remarks>
         public bool ContainsValidRequestSecurityTokenResponse()
         {
-            if ( null == this.RequestSecurityTokenResponse )
+            if (null == this.RequestSecurityTokenResponse && this.RequestSecurityTokenResponse.IsExpired)
             {
                 return false;
-            }            
-
-            return true;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private T RetrieveSettingFromFile<T>(string dir, string file) where T : class
