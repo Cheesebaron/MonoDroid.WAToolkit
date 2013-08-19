@@ -54,12 +54,11 @@ namespace MonoDroid.WAToolkit.Library.Login
         private ProgressDialog _progressDialog;
         public void ShowProgressDialog(string title, string message)
         {
-            if (!_progressDialog.IsShowing)
-            {
-                _progressDialog.SetTitle(title);
-                _progressDialog.SetMessage(message);
-                _progressDialog.Show();
-            }
+            if (_progressDialog.IsShowing) return;
+
+            _progressDialog.SetTitle(title);
+            _progressDialog.SetMessage(message);
+            _progressDialog.Show();
         }
 
         public void HideProgressDialog()

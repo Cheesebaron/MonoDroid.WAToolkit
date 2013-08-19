@@ -24,11 +24,11 @@ namespace MonoDroid.WAToolkit.Library.Login
     {
         static IntPtr class_ref = JNIEnv.FindClass("monodroid/watoolkit/library/login/AccessControlJavascriptNotify");
 
-        public ManagedAccessControlJavascriptNotify ()
+        protected ManagedAccessControlJavascriptNotify ()
 		{
 		}
 
-        public ManagedAccessControlJavascriptNotify(IntPtr handle, JniHandleOwnership transfer)
+        protected ManagedAccessControlJavascriptNotify(IntPtr handle, JniHandleOwnership transfer)
 			: base (handle, transfer)
 		{
 		}

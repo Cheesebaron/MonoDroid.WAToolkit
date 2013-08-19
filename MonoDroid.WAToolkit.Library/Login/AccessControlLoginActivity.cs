@@ -39,34 +39,48 @@ namespace MonoDroid.WAToolkit.Library.Login
         {
             base.OnCreate(bundle);
 
-            LinearLayout rootLayout = new LinearLayout(this);
-            rootLayout.LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-            rootLayout.Orientation = Orientation.Vertical;
+            var rootLayout = new LinearLayout(this)
+            {
+                LayoutParameters =
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent),
+                Orientation = Orientation.Vertical
+            };
 
-            TextView header = new TextView(this);
-            header.Text = "Log in";
-            header.TextSize = 30;
+            var header = new TextView(this)
+            {
+                Text = "Log in",
+                TextSize = 30,
+                LayoutParameters =
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.WrapContent)
+            };
             header.SetPadding(5, 11, 0, 11);
-            header.LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.WrapContent);
+            
 
             rootLayout.AddView(header);
 
-            TextView description = new TextView(this);
-            description.Text = "Log in the application with your account of choice.";
-            description.TextSize = 15;
+            var description = new TextView(this)
+            {
+                Text = "Log in the application with your account of choice.",
+                TextSize = 15,
+                LayoutParameters =
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.WrapContent)
+            };
             description.SetPadding(5, 11, 5, 11);
-            description.LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.WrapContent);
+            
 
             rootLayout.AddView(description);
 
-            loginView = new AccessControlIdentityProviderListView(this);
-            loginView.LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-            loginView.Orientation = Orientation.Vertical;
+            loginView = new AccessControlIdentityProviderListView(this)
+            {
+                LayoutParameters =
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent),
+                Orientation = Orientation.Vertical
+            };
 
-            loginView.NavigateToIdentityProvider += new EventHandler<IdentityProviderInformationEventArgs>(loginView_NavigateToIdentityProvider);
+            loginView.NavigateToIdentityProvider += loginView_NavigateToIdentityProvider;
 
-            string realm = Intent.GetStringExtra("monodroid.watoolkit.library.login.realm");
-            string acsNamespace = Intent.GetStringExtra("monodroid.watoolkit.library.login.acsNamespace");
+            var realm = Intent.GetStringExtra("monodroid.watoolkit.library.login.realm");
+            var acsNamespace = Intent.GetStringExtra("monodroid.watoolkit.library.login.acsNamespace");
 
             loginView.Realm = realm;
             loginView.ServiceNamespace = acsNamespace;
@@ -80,7 +94,7 @@ namespace MonoDroid.WAToolkit.Library.Login
 
         private void loginView_NavigateToIdentityProvider(object sender, IdentityProviderInformationEventArgs e)
         {
-            Intent intent = new Intent(this, typeof(AccessControlWebAuthActivity));
+            var intent = new Intent(this, typeof(AccessControlWebAuthActivity));
             intent.PutExtra("monodroid.watoolkit.library.login.url", e.IdentityProviderInformation.LoginUrl);
 
             StartActivityForResult(intent, WEB_AUTH_ACTIVITY);
@@ -91,9 +105,9 @@ namespace MonoDroid.WAToolkit.Library.Login
             // We've got a result from the webactivity
             if (WEB_AUTH_ACTIVITY == requestCode && Result.Ok == resultCode)
             {
-                string requestSecurityTokenResponse = data.GetStringExtra("monodroid.watoolkit.library.login.RequestSecurityTokenResponse");
+                var requestSecurityTokenResponse = data.GetStringExtra("monodroid.watoolkit.library.login.RequestSecurityTokenResponse");
                 // Lets try parse it!
-                RequestSecurityTokenResponse token = RequestSecurityTokenResponse.FromJSON(requestSecurityTokenResponse);
+                var token = RequestSecurityTokenResponse.FromJSON(requestSecurityTokenResponse);
                 RequestSecurityTokenResponseStore.Instance.RequestSecurityTokenResponse = token;
 
                 if (Parent == null)
@@ -110,15 +124,15 @@ namespace MonoDroid.WAToolkit.Library.Login
         }
 
         #region AlertDialog
-        private AlertDialog alertDialog;
+        private AlertDialog _alertDialog;
         private void ShowAlertDialog(string title, string message)
         {
-            if (alertDialog != null && alertDialog.IsShowing) return;
-            alertDialog = new AlertDialog.Builder(this).Create();
-            alertDialog.SetTitle(title);
-            alertDialog.SetMessage(message);
-            alertDialog.SetButton("OK", (alertsender, args) => { });
-            alertDialog.Show();
+            if (_alertDialog != null && _alertDialog.IsShowing) return;
+            _alertDialog = new AlertDialog.Builder(this).Create();
+            _alertDialog.SetTitle(title);
+            _alertDialog.SetMessage(message);
+            _alertDialog.SetButton("OK", (alertsender, args) => { });
+            _alertDialog.Show();
         }
         #endregion
     }

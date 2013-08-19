@@ -32,13 +32,13 @@ namespace MonoDroid.WAToolkit.Library.Login
         {
             base.OnCreate(bundle);
 
-            string url = Intent.GetStringExtra("monodroid.watoolkit.library.login.url");
+            var url = Intent.GetStringExtra("monodroid.watoolkit.library.login.url");
 
             System.Diagnostics.Debug.WriteLine(url);
 
-            this.Window.RequestFeature(WindowFeatures.Progress);
+            Window.RequestFeature(WindowFeatures.Progress);
 
-            WebView webView = new WebView(this);
+            var webView = new WebView(this);
 
             webView.Settings.JavaScriptEnabled = true;
             webView.Settings.SetSupportZoom(true);
@@ -50,8 +50,8 @@ namespace MonoDroid.WAToolkit.Library.Login
             webView.VerticalScrollBarEnabled = true;
             webView.HorizontalScrollBarEnabled = true;
 
-            AccessControlJavascriptNotify notify = new AccessControlJavascriptNotify();
-            notify.GotSecurityTokenResponse += new EventHandler<RequestSecurityTokenResponseEventArgs>(notify_GotSecurityTokenResponse);
+            var notify = new AccessControlJavascriptNotify();
+            notify.GotSecurityTokenResponse += GotSecurityTokenResponse;
 
             webView.AddJavascriptInterface(notify, "external");
             webView.SetWebViewClient(new AuthWebViewClient());
@@ -62,11 +62,11 @@ namespace MonoDroid.WAToolkit.Library.Login
             AddContentView(webView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent));
         }
 
-        void notify_GotSecurityTokenResponse(object sender, RequestSecurityTokenResponseEventArgs e)
+        private void GotSecurityTokenResponse(object sender, RequestSecurityTokenResponseEventArgs e)
         {
             if (e.Error == null)
             {
-                Intent data = new Intent();
+                var data = new Intent();
                 data.PutExtra("monodroid.watoolkit.library.login.RequestSecurityTokenResponse", e.Response);
 
                 if (Parent == null)
@@ -91,10 +91,10 @@ namespace MonoDroid.WAToolkit.Library.Login
             public override void Notify(Java.Lang.String securityTokenResponse)
             {
                 Exception ex = null;
-                string response = "";
+                var response = "";
 
                 if (securityTokenResponse == null || securityTokenResponse.IsEmpty)
-                    ex = new ArgumentNullException("Did not recieve a Token Response");
+                    ex = new ArgumentNullException("securityTokenResponse", "Did not recieve a Token Response");
                 else
                     response = securityTokenResponse.ToString();
 
@@ -107,21 +107,21 @@ namespace MonoDroid.WAToolkit.Library.Login
 
         private class AuthWebChromeClient : WebChromeClient
         {
-            private Activity mParentActivity;
-            private string mTitle;
+            private readonly Activity _parentActivity;
+            private readonly string _title;
 
             public AuthWebChromeClient(Activity parentActivity)
             {
-                mParentActivity = parentActivity;
-                mTitle = parentActivity.Title;
+                _parentActivity = parentActivity;
+                _title = parentActivity.Title;
             }
 
             public override void OnProgressChanged(WebView view, int newProgress)
             {
-                mParentActivity.Title = string.Format("Loading {0}%", newProgress);
-                mParentActivity.SetProgress(newProgress * 100);
+                _parentActivity.Title = string.Format("Loading {0}%", newProgress);
+                _parentActivity.SetProgress(newProgress * 100);
 
-                if (newProgress == 100) mParentActivity.Title = mTitle;
+                if (newProgress == 100) _parentActivity.Title = _title;
             }
         }
     }

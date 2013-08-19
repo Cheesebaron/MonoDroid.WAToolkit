@@ -30,11 +30,11 @@ namespace MonoDroid.WAToolkit.Library.Login
     {
         private IEnumerable<IdentityProviderInformation> _identityProviders;
         private readonly IList<View> _views = new List<View>();
-        private Context context;
+        private readonly Context _context;
 
         public IdentityProviderAdapter(Context context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public IEnumerable<IdentityProviderInformation> IdentityProviders
@@ -68,15 +68,19 @@ namespace MonoDroid.WAToolkit.Library.Login
 
             if (convertView == null)
             {
-                view = new IdentityProviderView(context, _identityProviders.ElementAtOrDefault(position).Name);
+                var identityProvider = _identityProviders.ElementAtOrDefault(position);
+                if (identityProvider != null)
+                    view = new IdentityProviderView(_context, identityProvider.Name);
             }
             else
             {
                 view = (IdentityProviderView)convertView;
-                view.Name = _identityProviders.ElementAtOrDefault(position).Name;
+                var identityProvider = _identityProviders.ElementAtOrDefault(position);
+                if (identityProvider != null)
+                    view.Name = identityProvider.Name;
             }
 
-            if (!_views.Contains(view))
+            if (view != null && !_views.Contains(view))
                 _views.Add(view);
 
             return view;
@@ -97,23 +101,23 @@ namespace MonoDroid.WAToolkit.Library.Login
             base.Dispose(disposing);
         }
 
-        private class IdentityProviderView : TextView
+        private sealed class IdentityProviderView : TextView
         {
-            private const int textSize = 20;
-            private const int padding = 11;
+            private const int DefaultTextSize = 20;
+            private const int DefaultPadding = 11;
 
             public IdentityProviderView(Context context, string name)
                 : base(context)
             {
-                this.SetText(name, BufferType.Normal);
-                this.SetTextSize(Android.Util.ComplexUnitType.Sp, textSize);
-                this.SetPadding(padding, padding, padding, padding);
-                this.SetTextColor(Android.Graphics.Color.White);
+                Text = name;
+                TextSize = DefaultTextSize;
+                SetPadding(DefaultPadding, DefaultPadding, DefaultPadding, DefaultPadding);
+                SetTextColor(Android.Graphics.Color.White);
             }
 
             public string Name
             {
-                set { this.SetText(value, BufferType.Normal); }
+                set { SetText(value, BufferType.Normal); }
             }
         }
     }

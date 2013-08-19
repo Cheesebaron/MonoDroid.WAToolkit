@@ -14,8 +14,6 @@
 // permissions and limitations under the License.
 //---------------------------------------------------------------------------------
 
-using System;
-
 using Android.App;
 using Android.Content;
 using Android.Views;
@@ -30,7 +28,7 @@ namespace MonoDroid.WAToolkit
     [Activity(Label = "MonoDroid WAToolkit Sample", MainLauncher = true, Icon = "@drawable/icon", Theme = "@android:style/Theme.NoTitleBar")]
     public class GetTokenSampleActivity : Activity
     {
-        TextView tokenText;
+        TextView _tokenText;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -38,14 +36,14 @@ namespace MonoDroid.WAToolkit
 
             SetContentView(Resource.Layout.Main);
 
-            tokenText = FindViewById<TextView>(Resource.Id.Token);
+            _tokenText = FindViewById<TextView>(Resource.Id.Token);
 
             UpdateTokenText();
         }
 
         private void LogIn()
         {
-            Intent intent = new Intent(this, typeof(AccessControlLoginActivity));
+            var intent = new Intent(this, typeof(AccessControlLoginActivity));
             intent.PutExtra("monodroid.watoolkit.library.login.realm", Resources.GetString(Resource.String.realm));
             intent.PutExtra("monodroid.watoolkit.library.login.acsNamespace", Resources.GetString(Resource.String.acsNamespace));
 
@@ -60,9 +58,8 @@ namespace MonoDroid.WAToolkit
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            var
-            item = menu.Add(1, 1, 0, Resource.String.LogIn);
-            item = menu.Add(1, 2, 1, Resource.String.RemoveToken);
+            menu.Add(1, 1, 0, Resource.String.LogIn);
+            menu.Add(1, 2, 1, Resource.String.RemoveToken);
             return true;
         }
 
@@ -82,10 +79,7 @@ namespace MonoDroid.WAToolkit
         private void UpdateTokenText()
         {
             var token = RequestSecurityTokenResponseStore.Instance.RequestSecurityTokenResponse;
-            if (null != token)
-                tokenText.Text = token.ToString();
-            else
-                tokenText.Text = "Token not present!";
+            _tokenText.Text = null != token ? token.ToString() : "Token not present!";
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

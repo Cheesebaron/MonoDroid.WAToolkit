@@ -8,6 +8,6 @@
   <string name="LogIn">Log In</string>
   <string name="RemoveToken">Remove Token</string>
 
-    <string name="acsNamespace">bruelandkjaer</string>
-    <string name="realm">uri://security.noisesentinel.com/Phone7</string>
+    <string name="acsNamespace">yourNamespace</string>
+    <string name="realm">uri://your.uri/</string>
 </resources>
